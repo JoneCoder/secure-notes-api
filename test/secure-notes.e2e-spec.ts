@@ -19,7 +19,7 @@ describe('Secure Notes System (E2E)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.setGlobalPrefix('api');
+    app.setGlobalPrefix('api/v1');
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -32,7 +32,7 @@ describe('Secure Notes System (E2E)', () => {
 
     // 1. Login with seeded Admin
     const adminLoginRes = await request(app.getHttpServer())
-      .post('/api/auth/login')
+      .post('/api/v1/auth/login')
       .send({ email: 'admin@example.com', password: 'Admin@123456' })
       .expect(200);
 
@@ -41,7 +41,7 @@ describe('Secure Notes System (E2E)', () => {
 
     // 2. Login with seeded User (Alice)
     const userLoginRes = await request(app.getHttpServer())
-      .post('/api/auth/login')
+      .post('/api/v1/auth/login')
       .send({ email: 'alice@example.com', password: 'User@123456' })
       .expect(200);
 
@@ -50,7 +50,7 @@ describe('Secure Notes System (E2E)', () => {
 
     // 3. Login with seeded User 2 (Bob)
     const user2LoginRes = await request(app.getHttpServer())
-      .post('/api/auth/login')
+      .post('/api/v1/auth/login')
       .send({ email: 'bob@example.com', password: 'User@123456' })
       .expect(200);
 
@@ -62,9 +62,9 @@ describe('Secure Notes System (E2E)', () => {
   });
 
   describe('Authentication & Profile', () => {
-    it('GET /api/auth/me - returns authenticated user profile without password', async () => {
+    it('GET /api/v1/auth/me - returns authenticated user profile without password', async () => {
       const res = await request(app.getHttpServer())
-        .get('/api/auth/me')
+        .get('/api/v1/auth/me')
         .set('Authorization', `Bearer ${userToken}`)
         .expect(200);
 
@@ -72,10 +72,10 @@ describe('Secure Notes System (E2E)', () => {
       expect(res.body.password).toBeUndefined();
     });
 
-    it('POST /api/auth/register - registers new user with user role', async () => {
+    it('POST /api/v1/auth/register - registers new user with user role', async () => {
       const timestamp = Date.now();
       const res = await request(app.getHttpServer())
-        .post('/api/auth/register')
+        .post('/api/v1/auth/register')
         .send({
           name: 'Dave Test',
           email: `dave_${timestamp}@example.com`,
@@ -90,16 +90,16 @@ describe('Secure Notes System (E2E)', () => {
   });
 
   describe('Role-Based Access Control (RBAC)', () => {
-    it('GET /api/admin/users - regular user receives 403 Forbidden', async () => {
+    it('GET /api/v1/admin/users - regular user receives 403 Forbidden', async () => {
       await request(app.getHttpServer())
-        .get('/api/admin/users')
+        .get('/api/v1/admin/users')
         .set('Authorization', `Bearer ${userToken}`)
         .expect(403);
     });
 
-    it('GET /api/admin/users - admin receives 200 and paginated list', async () => {
+    it('GET /api/v1/admin/users - admin receives 200 and paginated list', async () => {
       const res = await request(app.getHttpServer())
-        .get('/api/admin/users?page=1&limit=5')
+        .get('/api/v1/admin/users?page=1&limit=5')
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(200);
 
@@ -110,9 +110,9 @@ describe('Secure Notes System (E2E)', () => {
   });
 
   describe('Notes Management & Ownership Enforcement', () => {
-    it('POST /api/notes - user creates a private note', async () => {
+    it('POST /api/v1/notes - user creates a private note', async () => {
       const res = await request(app.getHttpServer())
-        .post('/api/notes')
+        .post('/api/v1/notes')
         .set('Authorization', `Bearer ${userToken}`)
         .send({
           title: 'Alice Special Secret Note',
@@ -124,9 +124,9 @@ describe('Secure Notes System (E2E)', () => {
       expect(res.body.title).toBe('Alice Special Secret Note');
     });
 
-    it('GET /api/notes - user can view their notes with pagination', async () => {
+    it('GET /api/v1/notes - user can view their notes with pagination', async () => {
       const res = await request(app.getHttpServer())
-        .get('/api/notes?page=1&limit=10')
+        .get('/api/v1/notes?page=1&limit=10')
         .set('Authorization', `Bearer ${userToken}`)
         .expect(200);
 
@@ -134,17 +134,17 @@ describe('Secure Notes System (E2E)', () => {
       expect(res.body.meta.total).toBeGreaterThan(0);
     });
 
-    it('PUT /api/notes/:id - unauthorized user cannot edit another user note', async () => {
+    it('PUT /api/v1/notes/:id - unauthorized user cannot edit another user note', async () => {
       await request(app.getHttpServer())
-        .put(`/api/notes/${userNoteId}`)
+        .put(`/api/v1/notes/${userNoteId}`)
         .set('Authorization', `Bearer ${user2Token}`)
         .send({ title: 'Hacked Title', content: 'Hacked Content' })
         .expect(403);
     });
 
-    it('GET /api/admin/notes - admin can view all notes across users', async () => {
+    it('GET /api/v1/admin/notes - admin can view all notes across users', async () => {
       const res = await request(app.getHttpServer())
-        .get('/api/admin/notes')
+        .get('/api/v1/admin/notes')
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(200);
 
@@ -153,9 +153,9 @@ describe('Secure Notes System (E2E)', () => {
   });
 
   describe('Aggregation Tasks', () => {
-    it('GET /api/admin/users/group-by-interests - Scenario 1 aggregation', async () => {
+    it('GET /api/v1/admin/users/group-by-interests - Scenario 1 aggregation', async () => {
       const res = await request(app.getHttpServer())
-        .get('/api/admin/users/group-by-interests')
+        .get('/api/v1/admin/users/group-by-interests')
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(200);
 
@@ -167,9 +167,9 @@ describe('Secure Notes System (E2E)', () => {
       expect(firstGroup.users).toBeInstanceOf(Array);
     });
 
-    it('GET /api/users/:id/posts - Scenario 2 aggregation with $lookup', async () => {
+    it('GET /api/v1/users/:id/posts - Scenario 2 aggregation with $lookup', async () => {
       const res = await request(app.getHttpServer())
-        .get(`/api/users/${userId}/posts`)
+        .get(`/api/v1/users/${userId}/posts`)
         .expect(200);
 
       expect(res.body._id).toBe(userId);
@@ -180,9 +180,9 @@ describe('Secure Notes System (E2E)', () => {
   });
 
   describe('Admin Safety Protections', () => {
-    it('DELETE /api/admin/users/:id - admin cannot delete own account', async () => {
+    it('DELETE /api/v1/admin/users/:id - admin cannot delete own account', async () => {
       await request(app.getHttpServer())
-        .delete(`/api/admin/users/${adminId}`)
+        .delete(`/api/v1/admin/users/${adminId}`)
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(400);
     });

@@ -86,7 +86,7 @@ npm run verify
 ```bash
 npm run start:dev
 ```
-API will run on: `http://localhost:8000/api`
+API will run on: `http://localhost:8000/api/v1`
 
 ---
 

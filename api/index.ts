@@ -18,11 +18,11 @@ async function bootstrapServer(): Promise<Express> {
         service: 'secure-notes-api',
         message: 'Secure Notes API is running on Vercel',
         endpoints: {
-          health: '/api',
-          auth: '/api/auth',
-          notes: '/api/notes',
-          users: '/api/users',
-          admin: '/api/admin',
+          health: '/api/v1',
+          auth: '/api/v1/auth',
+          notes: '/api/v1/notes',
+          users: '/api/v1/users',
+          admin: '/api/v1/admin',
         },
       });
     });
@@ -32,7 +32,7 @@ async function bootstrapServer(): Promise<Express> {
       new ExpressAdapter(expressApp),
     );
 
-    nestApp.setGlobalPrefix('api');
+    nestApp.setGlobalPrefix('api/v1');
 
     nestApp.enableCors({
       origin: true,

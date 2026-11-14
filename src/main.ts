@@ -12,7 +12,7 @@ async function bootstrap() {
   const port = configService.get<number>('PORT', 8000);
   const frontendUrl = configService.get<string>('FRONTEND_URL', 'http://localhost:3000');
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/v1');
 
   app.enableCors({
     origin: [frontendUrl, 'http://localhost:3000'],
@@ -30,6 +30,6 @@ async function bootstrap() {
   app.useGlobalFilters(new GlobalHttpExceptionFilter());
 
   await app.listen(port);
-  logger.log(`🚀 Secure Notes API is running on: http://localhost:${port}/api`);
+  logger.log(`🚀 Secure Notes API is running on: http://localhost:${port}/api/v1`);
 }
 bootstrap();

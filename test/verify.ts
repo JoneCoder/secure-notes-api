@@ -14,7 +14,7 @@ async function runVerification() {
   console.log('=============================================\n');
 
   const app = await NestFactory.create(AppModule, { logger: ['error', 'warn'] });
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -25,7 +25,7 @@ async function runVerification() {
   app.useGlobalFilters(new GlobalHttpExceptionFilter());
 
   const server = await app.listen(8001);
-  const baseUrl = 'http://localhost:8001/api';
+  const baseUrl = 'http://localhost:8001/api/v1';
 
   let passed = 0;
   let failed = 0;
