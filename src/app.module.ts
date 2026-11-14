@@ -3,7 +3,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 import { NotesModule } from './notes/notes.module';
+import { PostsModule } from './posts/posts.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -20,7 +24,11 @@ import { NotesModule } from './notes/notes.module';
           'mongodb://localhost:27017/secure_notes',
       }),
     }),
+    AuthModule,
+    UsersModule,
     NotesModule,
+    PostsModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

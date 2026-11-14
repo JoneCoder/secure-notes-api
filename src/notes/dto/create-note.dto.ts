@@ -1,29 +1,23 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateNoteDto {
   @IsString()
   @IsNotEmpty()
+  @MaxLength(200)
   title: string;
 
   @IsString()
   @IsNotEmpty()
   content: string;
-
-  @IsBoolean()
-  @IsOptional()
-  isEncrypted?: boolean;
 }
 
 export class UpdateNoteDto {
-  @IsString()
   @IsOptional()
+  @IsString()
+  @MaxLength(200)
   title?: string;
 
+  @IsOptional()
   @IsString()
-  @IsOptional()
   content?: string;
-
-  @IsBoolean()
-  @IsOptional()
-  isEncrypted?: boolean;
 }
