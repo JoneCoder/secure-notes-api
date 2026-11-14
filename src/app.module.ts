@@ -22,6 +22,7 @@ import { AdminModule } from './admin/admin.module';
         uri:
           configService.get<string>('MONGODB_URI') ||
           'mongodb://localhost:27017/secure_notes',
+        serverSelectionTimeoutMS: 8000,
       }),
     }),
     AuthModule,

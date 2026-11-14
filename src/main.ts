@@ -15,8 +15,15 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   app.enableCors({
-    origin: [frontendUrl, 'http://localhost:3000'],
+    origin: [
+      'https://secure-notes-wine-seven.vercel.app',
+      frontendUrl,
+      'http://localhost:3000',
+      'http://localhost:3001',
+    ],
     credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With', 'Origin'],
   });
 
   app.useGlobalPipes(
