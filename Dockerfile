@@ -21,6 +21,6 @@ RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=builder /usr/src/app/dist ./dist
 
-EXPOSE 5000
+EXPOSE 8000
 
 CMD ["node", "dist/main"]
