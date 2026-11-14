@@ -23,4 +23,4 @@ COPY --from=builder /usr/src/app/dist ./dist
 
 EXPOSE 8000
 
-CMD ["node", "dist/main"]
+CMD ["node", "dist/src/main"]
